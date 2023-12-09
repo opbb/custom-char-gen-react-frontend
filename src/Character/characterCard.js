@@ -31,7 +31,7 @@ function CharacterCard({ content }) {
           <div className="d-flex flex-row flex-wrap justify-content-around mt-1">
             {traits.map((trait, index) => {
               return (
-                <div className="text-truncate m-1 p-2 border rounded-2 text-center">
+                <div className="m-1 p-2 text-truncate border rounded-2 text-center">
                   <h5>{trait.title}</h5>
                   <span>{trait.value}</span>
                 </div>

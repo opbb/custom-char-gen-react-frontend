@@ -3,6 +3,7 @@ function TemplateCard({ content }) {
   const navigate = useNavigate();
   const { _id, ownerID, title, description, traits } = content;
   const ourID = "you";
+  const traitsExist = traits !== undefined && traits.length >= 1;
   const weAreOwner = ownerID === ourID;
   return (
     <div>
@@ -59,7 +60,7 @@ function TemplateCard({ content }) {
             <button
               className="btn btn-warning btn-small flex-grow-1"
               onClick={() => {
-                window.confirm(`Are you sure you want to delete ${title}?`);
+                navigate(`/Template/${_id}/Edit`);
               }}
             >
               <i class="fa-solid fa-pencil"></i>&nbsp;Edit
@@ -67,8 +68,11 @@ function TemplateCard({ content }) {
             </button>
             <button
               className="btn btn-success btn-small flex-grow-1"
+              disabled={!traitsExist}
               onClick={() => {
-                window.confirm(`Are you sure you want to delete ${title}?`);
+                // generate new character
+                const newCharID = "newCharID";
+                navigate(`/Character/${newCharID}`);
               }}
             >
               <i class="fa-solid fa-dice-d20"></i>&nbsp;Generate
@@ -80,7 +84,7 @@ function TemplateCard({ content }) {
             <button
               className="btn btn-warning btn-small d-block"
               onClick={() => {
-                // Copy Character
+                // Copy Template
                 const copyID = "copyID";
                 navigate(`/Template/${copyID}`);
               }}
