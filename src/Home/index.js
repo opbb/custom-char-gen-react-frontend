@@ -1,25 +1,32 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ListAccordionItem from "./listAccordionItem";
 import TemplateCard from "../Template/templateCard";
 import RandomOptionsCard from "../RandomOptions/randomOptionsCard";
 import CharacterCard from "../Character/characterCard";
 import SongCard from "../Search/songCard";
+import {
+  yourTemplates,
+  yourCharacters,
+  yourRandomOptions,
+  yourThemeSongs,
+  featuredCharacters,
+  featuredRandomOptions,
+  featuredThemeSongs,
+  feturedTemplates,
+} from "../testData";
 function Home() {
   //const templates = useSelector((state) => state.templatesReducer.templates);
-  const templates = [
-    { _id: "1", title: "Template 1" },
-    { _id: "2", title: "Template 2" },
-  ]; // Testing data
+
   const user = useSelector((state) => state.templatesReducer.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [searchCategory, setSearchCategory] = useState("Templates");
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedTemplateID, setSelectedTemplateID] = useState(
-    templates.length >= 1 ? templates[0]._id : undefined
+  const [selectedTemplate, setSelectedTemplate] = useState(
+    yourTemplates.length >= 1 ? yourTemplates[0] : undefined
   );
   const loggedIn = user !== undefined;
 
@@ -102,7 +109,7 @@ function Home() {
                         </button>
                       );
                     }}
-                    listContents={[{ title: "Item 1" }, { title: "Item 2" }]}
+                    listContents={yourTemplates}
                     ListContentsComponentType={TemplateCard}
                   />
                   <ListAccordionItem
@@ -127,7 +134,7 @@ function Home() {
                         </button>
                       );
                     }}
-                    listContents={[{ title: "Item 1" }, { title: "Item 2" }]}
+                    listContents={yourRandomOptions}
                     ListContentsComponentType={RandomOptionsCard}
                   />
                 </div>
@@ -137,16 +144,20 @@ function Home() {
                     title="Characters"
                     AboveListComponent={() => {
                       return (
-                        <span>
+                        <span className="d-flex flex-row flex-nowrap">
                           <button
-                            className="btn btn-primary btn-sm"
-                            disabled={selectedTemplateID === undefined}
+                            className="btn btn-primary btn-sm text-nowrap"
+                            disabled={
+                              selectedTemplate === undefined ||
+                              selectedTemplate.traits == undefined ||
+                              selectedTemplate.traits.length < 1
+                            }
                             onClick={() => {
                               // Make new blank Character from Template
                               console.log(
                                 `Making new character from template ${
-                                  templates.find(
-                                    (t) => t._id === selectedTemplateID
+                                  yourTemplates.find(
+                                    (t) => t._id === selectedTemplate._id
                                   ).title
                                 }`
                               );
@@ -160,23 +171,31 @@ function Home() {
                           >
                             <i className="fa-solid fa-plus"></i> New Character
                           </button>
-                          {" from "}
+                          &nbsp;from&nbsp;
                           <select
-                            className="btn btn-secondary"
+                            className="btn btn-secondary text-truncate"
                             title="New Character Template"
-                            disabled={selectedTemplateID === undefined}
+                            disabled={selectedTemplate === undefined}
                             onChange={(e) =>
-                              setSelectedTemplateID(e.target.value)
+                              setSelectedTemplate(
+                                yourTemplates.find(
+                                  (template) => template._id === e.target.value
+                                )
+                              )
                             }
-                            value={selectedTemplateID}
+                            value={
+                              selectedTemplate
+                                ? selectedTemplate._id
+                                : undefined
+                            }
                           >
-                            {selectedTemplateID === undefined ? (
+                            {selectedTemplate === undefined ? (
                               <option value="NoTemplates">No Templates</option>
                             ) : (
-                              templates.map((template, index) => {
+                              yourTemplates.map((template, index) => {
                                 return (
                                   <option key={index} value={template._id}>
-                                    {template.title}
+                                    <span>{template.title}</span>
                                   </option>
                                 );
                               })
@@ -185,7 +204,7 @@ function Home() {
                         </span>
                       );
                     }}
-                    listContents={[{ title: "Item 1" }, { title: "Item 2" }]}
+                    listContents={yourCharacters}
                     ListContentsComponentType={CharacterCard}
                   />
                   <ListAccordionItem
@@ -205,7 +224,7 @@ function Home() {
                         </button>
                       );
                     }}
-                    listContents={[{ title: "Item 1" }, { title: "Item 2" }]}
+                    listContents={yourThemeSongs}
                     ListContentsComponentType={SongCard}
                   />
                 </div>
@@ -221,40 +240,40 @@ function Home() {
               className="accordion-button collapsed"
               type="button"
               data-bs-toggle="collapse"
-              data-bs-target="#publicStuff"
+              data-bs-target="#featuredStuff"
               aria-expanded="false"
-              aria-controls="publicStuff"
+              aria-controls="featuredStuff"
             >
-              Other's Public Stuff
+              Daily Featured Content
             </button>
           </h2>
-          <div id="publicStuff" className="accordion-collapse collapse show">
+          <div id="featuredStuff" className="accordion-collapse collapse show">
             <div className="accordion-body row px-0">
               <div className="col-12 col-md-6">
                 <ListAccordionItem
-                  id="publicTemplates"
+                  id="featuredTemplates"
                   title="Templates"
-                  listContents={[{ title: "Item 1" }, { title: "Item 2" }]}
+                  listContents={feturedTemplates}
                   ListContentsComponentType={TemplateCard}
                 />
                 <ListAccordionItem
-                  id="publicRandomOptions"
+                  id="featuredRandomOptions"
                   title="Random Options"
-                  listContents={[{ title: "Item 1" }, { title: "Item 2" }]}
+                  listContents={featuredRandomOptions}
                   ListContentsComponentType={RandomOptionsCard}
                 />
               </div>
               <div className="col-12 col-md-6">
                 <ListAccordionItem
-                  id="publicCharacters"
+                  id="featuredCharacters"
                   title="Characters"
-                  listContents={[{ title: "Item 1" }, { title: "Item 2" }]}
+                  listContents={featuredCharacters}
                   ListContentsComponentType={CharacterCard}
                 />
                 <ListAccordionItem
-                  id="publicThemeSongs"
+                  id="featuredThemeSongs"
                   title="Theme Songs"
-                  listContents={[{ title: "Item 1" }, { title: "Item 2" }]}
+                  listContents={featuredThemeSongs}
                   ListContentsComponentType={SongCard}
                 />
               </div>

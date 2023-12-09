@@ -37,7 +37,19 @@
   }
 }
 
-.profile-header {
+.remove-link-decoration {
   color: inherit;
+  text-decoration: inherit;
+}
+
+.limit-card-header {
+  max-width: 85%;
+}
+
+.underline-on-hover {
   text-decoration: none;
+}
+
+.underline-on-hover:hover {
+  text-decoration: underline;
 }
