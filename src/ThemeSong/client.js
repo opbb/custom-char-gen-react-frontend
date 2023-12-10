@@ -1,7 +1,29 @@
 import axios from "axios";
 const BASE_API = process.env.REACT_APP_BASE_API_URL;
-const CHARACTERS_URL = `${BASE_API}/api/characters`;
-const CHARACTER_URL = `${BASE_API}/api/character`;
+const SONGS_URL = `${BASE_API}/api/songs`;
+const SONG_URL = `${BASE_API}/api/song`;
+export const findSongsBySearch = async (searchQuery, limit) => {
+  const response = await axios.get(
+    `${SONGS_URL}/search/${limit}/${searchQuery}`
+  );
+  return response.data;
+};
+export const findSongByID = async (songID) => {
+  const response = await axios.get(`${SONG_URL}/${songID}`);
+  return response.data;
+};
+export const findSongsByID = async (songIDs) => {
+  let songIDsString = "";
+  songIDs.forEach((songID, index) => {
+    if (index !== 0) {
+      songIDsString = songIDsString.concat(`,${songID}`);
+    } else {
+      songIDsString = songID;
+    }
+  });
+  const response = await axios.get(`${SONGS_URL}/${songIDsString}`);
+  return response.data;
+};
 // export const deleteTemplate = async (templateID) => {
 //   const response = await axios.delete(`${TEMPLATE_URL}/${templateID}`);
 //   return response.data;
@@ -22,10 +44,7 @@ const CHARACTER_URL = `${BASE_API}/api/character`;
 //   const response = await axios.get(`${TEMPLATES_URL}/featured`);
 //   return response.data;
 // };
-// export const findTemplatesBySearch = async (searchQuery) => {
-//   const response = await axios.get(`${TEMPLATES_URL}/search/${searchQuery}`);
-//   return response.data;
-// };
+
 // export const updateTemplate = async (template) => {
 //   const response = await axios.put(`${TEMPLATE_URL}/${template._id}`, template);
 //   return response.data;
