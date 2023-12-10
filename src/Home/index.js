@@ -17,6 +17,7 @@ import {
   featuredTemplates,
 } from "../testData";
 import { addTemplate, setTemplates } from "../Template/templatesReducer";
+import { testGetAuthToken } from "../Character/client";
 function Home() {
   const yourTemplates = useSelector(
     (state) => state.templatesReducer.templates
@@ -45,7 +46,7 @@ function Home() {
     findTemplatesByOwner(user._id).then((templates) => {
       dispatch(setTemplates(templates));
     });
-  }, []);
+  }, [user._id, dispatch]);
 
   const handleSearch = () => {
     console.log(`Searching for ${searchCategory} matching ${searchQuery}`);
@@ -101,7 +102,7 @@ function Home() {
           className="btn btn-primary btn-sm text-nowrap"
           disabled={
             selectedTemplate === undefined ||
-            selectedTemplate.traits == undefined ||
+            selectedTemplate.traits === undefined ||
             selectedTemplate.traits.length < 1
           }
           onClick={handleMakeCharacter}
@@ -152,6 +153,13 @@ function Home() {
 
   return (
     <div className="d-flex flex-column">
+      <button
+        className="btn btn-danger"
+        onClick={async () => {
+          const authToken = await testGetAuthToken();
+          console.log(`Auth Token: ${authToken}`);
+        }}
+      ></button>
       <div className="d-flex flex-column flex-md-row mb-2">
         <button className="btn btn-primary m-1" onClick={handleSearch}>
           Search

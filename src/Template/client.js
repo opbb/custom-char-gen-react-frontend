@@ -1,5 +1,5 @@
 import axios from "axios";
-export const BASE_API = process.env.REACT_APP_BASE_API_URL;
+const BASE_API = process.env.REACT_APP_BASE_API_URL;
 const TEMPLATES_URL = `${BASE_API}/api/templates`;
 const TEMPLATE_URL = `${BASE_API}/api/template`;
 export const deleteTemplate = async (templateID) => {
