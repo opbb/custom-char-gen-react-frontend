@@ -6,20 +6,23 @@ import TemplateCard from "../Template/templateCard";
 import RandomOptionsCard from "../RandomOptions/randomOptionsCard";
 import CharacterCard from "../Character/characterCard";
 import SongCard from "../Search/songCard";
+import { createBlankTemplate, findTemplatesByOwner } from "../Template/client";
 import {
-  yourTemplates,
   yourCharacters,
   yourRandomOptions,
   yourThemeSongs,
   featuredCharacters,
   featuredRandomOptions,
   featuredThemeSongs,
-  feturedTemplates,
+  featuredTemplates,
 } from "../testData";
+import { addTemplate, setTemplates } from "../Template/templatesReducer";
 function Home() {
-  //const templates = useSelector((state) => state.templatesReducer.templates);
-
-  const user = useSelector((state) => state.templatesReducer.user);
+  const yourTemplates = useSelector(
+    (state) => state.templatesReducer.templates
+  );
+  //const user = useSelector((state) => state.templatesReducer.user);
+  const user = { _id: "you", usename: "Test User (PLACEHOLDER)" };
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -37,11 +40,114 @@ function Home() {
   searchCategoryValuesAndUIStrings.set("RandomOptions", "Random Options");
   searchCategoryValuesAndUIStrings.set("ThemeSongs", "Theme Songs");
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    // TODO: Pull data from server
+    findTemplatesByOwner(user._id).then((templates) => {
+      dispatch(setTemplates(templates));
+    });
+  }, []);
 
   const handleSearch = () => {
     console.log(`Searching for ${searchCategory} matching ${searchQuery}`);
     navigate(`/Search/${searchCategory}/${searchQuery}`);
+  };
+
+  const handleMakeTemplate = () => {
+    // Make request from the server
+    createBlankTemplate(user._id).then((template) => {
+      dispatch(addTemplate(template));
+      navigate(`/Template/${template._id}/Edit`);
+    });
+  };
+
+  const handleMakeCharacter = () => {
+    // Make request from the server
+    //createTemplate(user._id).then((template) => {
+    //dispatch(addTemplate(template));
+    const characterID = `newCharacterFrom${selectedTemplate}ID`;
+    navigate(`/Character/${characterID}`);
+    //});
+  };
+
+  const AboveYourTemplatesComponent = () => {
+    return (
+      <button className="btn btn-primary btn-sm" onClick={handleMakeTemplate}>
+        <i className="fa-solid fa-plus"></i> New Template
+      </button>
+    );
+  };
+  const AboveYourRandomOptionsComponent = () => {
+    return (
+      <button
+        className="btn btn-primary btn-sm"
+        onClick={() => {
+          // Make new blank RandomOptions
+          const randomOptionsID = "GetNewID";
+          if (randomOptionsID !== undefined) {
+            navigate(`/RandomOptions/${randomOptionsID}`);
+          } else {
+            // Inform user
+          }
+        }}
+      >
+        <i className="fa-solid fa-plus"></i> New Random Options
+      </button>
+    );
+  };
+  const AboveYourCharactersComponent = () => {
+    return (
+      <span className="d-flex flex-row flex-nowrap align-items-center">
+        <button
+          className="btn btn-primary btn-sm text-nowrap"
+          disabled={
+            selectedTemplate === undefined ||
+            selectedTemplate.traits == undefined ||
+            selectedTemplate.traits.length < 1
+          }
+          onClick={handleMakeCharacter}
+        >
+          <i className="fa-solid fa-plus"></i> New Character
+        </button>
+        &nbsp;from&nbsp;
+        <select
+          className="btn btn-secondary text-truncate"
+          title="New Character Template"
+          disabled={selectedTemplate === undefined}
+          onChange={(e) =>
+            setSelectedTemplate(
+              yourTemplates.find((template) => template._id === e.target.value)
+            )
+          }
+          value={selectedTemplate ? selectedTemplate._id : undefined}
+        >
+          {selectedTemplate === undefined ? (
+            <option value="NoTemplates">No Templates</option>
+          ) : (
+            yourTemplates.map((template, index) => {
+              return (
+                <option key={index} value={template._id}>
+                  {template.title}
+                </option>
+              );
+            })
+          )}
+        </select>
+      </span>
+    );
+  };
+
+  const AboveYourThemeSongsComponent = () => {
+    return (
+      <button
+        className="btn btn-primary btn-sm"
+        onClick={() => {
+          // Search for ThemeSongs
+          navigate("/Search/ThemeSongs");
+        }}
+      >
+        <i className="fa-solid fa-magnifying-glass"></i> Search for Theme Songs
+      </button>
+    );
   };
 
   return (
@@ -71,7 +177,7 @@ function Home() {
         />
       </div>
       <div className="accordion accordion-flush" id="homeContent">
-        {!loggedIn ? (
+        {loggedIn ? (
           <div className="accordion-item">
             <h2 className="accordion-header">
               <button
@@ -91,49 +197,14 @@ function Home() {
                   <ListAccordionItem
                     id="yourTemplates"
                     title="Templates"
-                    AboveListComponent={() => {
-                      return (
-                        <button
-                          className="btn btn-primary btn-sm"
-                          onClick={() => {
-                            // Make new blank template
-                            const templateID = "GetNewID";
-                            if (templateID !== undefined) {
-                              navigate(`/Template/${templateID}/Edit`);
-                            } else {
-                              // Inform user
-                            }
-                          }}
-                        >
-                          <i className="fa-solid fa-plus"></i> New Template
-                        </button>
-                      );
-                    }}
+                    AboveListComponent={AboveYourTemplatesComponent}
                     listContents={yourTemplates}
                     ListContentsComponentType={TemplateCard}
                   />
                   <ListAccordionItem
                     id="yourRandomOptions"
                     title="Random Options"
-                    AboveListComponent={() => {
-                      return (
-                        <button
-                          className="btn btn-primary btn-sm"
-                          onClick={() => {
-                            // Make new blank RandomOptions
-                            const randomOptionsID = "GetNewID";
-                            if (randomOptionsID !== undefined) {
-                              navigate(`/RandomOptions/${randomOptionsID}`);
-                            } else {
-                              // Inform user
-                            }
-                          }}
-                        >
-                          <i className="fa-solid fa-plus"></i> New Random
-                          Options
-                        </button>
-                      );
-                    }}
+                    AboveListComponent={AboveYourRandomOptionsComponent}
                     listContents={yourRandomOptions}
                     ListContentsComponentType={RandomOptionsCard}
                   />
@@ -142,88 +213,14 @@ function Home() {
                   <ListAccordionItem
                     id="yourCharacters"
                     title="Characters"
-                    AboveListComponent={() => {
-                      return (
-                        <span className="d-flex flex-row flex-nowrap">
-                          <button
-                            className="btn btn-primary btn-sm text-nowrap"
-                            disabled={
-                              selectedTemplate === undefined ||
-                              selectedTemplate.traits == undefined ||
-                              selectedTemplate.traits.length < 1
-                            }
-                            onClick={() => {
-                              // Make new blank Character from Template
-                              console.log(
-                                `Making new character from template ${
-                                  yourTemplates.find(
-                                    (t) => t._id === selectedTemplate._id
-                                  ).title
-                                }`
-                              );
-                              const characterID = "GetNewID";
-                              if (characterID !== undefined) {
-                                navigate(`/Character/${characterID}`);
-                              } else {
-                                // Inform user
-                              }
-                            }}
-                          >
-                            <i className="fa-solid fa-plus"></i> New Character
-                          </button>
-                          &nbsp;from&nbsp;
-                          <select
-                            className="btn btn-secondary text-truncate"
-                            title="New Character Template"
-                            disabled={selectedTemplate === undefined}
-                            onChange={(e) =>
-                              setSelectedTemplate(
-                                yourTemplates.find(
-                                  (template) => template._id === e.target.value
-                                )
-                              )
-                            }
-                            value={
-                              selectedTemplate
-                                ? selectedTemplate._id
-                                : undefined
-                            }
-                          >
-                            {selectedTemplate === undefined ? (
-                              <option value="NoTemplates">No Templates</option>
-                            ) : (
-                              yourTemplates.map((template, index) => {
-                                return (
-                                  <option key={index} value={template._id}>
-                                    <span>{template.title}</span>
-                                  </option>
-                                );
-                              })
-                            )}
-                          </select>
-                        </span>
-                      );
-                    }}
+                    AboveListComponent={AboveYourCharactersComponent}
                     listContents={yourCharacters}
                     ListContentsComponentType={CharacterCard}
                   />
                   <ListAccordionItem
                     id="yourThemeSongs"
                     title="Theme Songs"
-                    AboveListComponent={() => {
-                      return (
-                        <button
-                          className="btn btn-primary btn-sm"
-                          onClick={() => {
-                            // Search for ThemeSongs
-                            navigate("/Search/ThemeSongs");
-                          }}
-                        >
-                          <i className="fa-solid fa-magnifying-glass"></i>{" "}
-                          Search for Theme Songs
-                        </button>
-                      );
-                    }}
+                    AboveListComponent={AboveYourThemeSongsComponent}
                     listContents={yourThemeSongs}
                     ListContentsComponentType={SongCard}
                   />
@@ -253,7 +250,7 @@ function Home() {
                 <ListAccordionItem
                   id="featuredTemplates"
                   title="Templates"
-                  listContents={feturedTemplates}
+                  listContents={featuredTemplates}
                   ListContentsComponentType={TemplateCard}
                 />
                 <ListAccordionItem

@@ -1,8 +1,18 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { findTemplatesByOwner } from "./client";
 
+// TODO: Add real user ID
+const initialTemplates = await findTemplatesByOwner("you");
 const initialState = {
-  templates: [],
-  template: { title: "", description: "" },
+  templates: initialTemplates,
+  template: {
+    _id: "",
+    ownerID: "",
+    visibility: "",
+    title: "",
+    description: "",
+    traits: [],
+  },
 };
 
 const templatesSlice = createSlice({

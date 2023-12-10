@@ -88,7 +88,7 @@ export const yourTemplates = [
     traits: [],
   },
 ];
-export const feturedTemplates = [
+export const featuredTemplates = [
   {
     _id: "4",
     ownerID: "owner2",

@@ -8,8 +8,8 @@ function CharacterCard({ content }) {
   const title = traitsExist ? traits[0].value : "Blank Character :|";
   return (
     <div>
-      <Link className="remove-link-decoration" to={`/Character/${_id}`}>
-        <div className="d-flex flex-row justify-content-between">
+      <div className="d-flex flex-row justify-content-between">
+        <Link className="remove-link-decoration" to={`/Character/${_id}`}>
           <div
             className={`text-truncate ${
               !weAreOwner ? "limit-card-header" : ""
@@ -17,21 +17,24 @@ function CharacterCard({ content }) {
           >
             <h3 className="mb-0">{title}</h3>
           </div>
-          {!weAreOwner ? (
-            <Link className="remove-link-decoration" to={`/Profile/${ownerID}`}>
-              <div className="text-truncate underline-on-hover">
-                By {ownerID}
-              </div>
-            </Link>
-          ) : (
-            <></>
-          )}
-        </div>
+        </Link>
+        {!weAreOwner ? (
+          <Link className="remove-link-decoration" to={`/Profile/${ownerID}`}>
+            <div className="text-truncate underline-on-hover">By {ownerID}</div>
+          </Link>
+        ) : (
+          <></>
+        )}
+      </div>
+      <Link className="remove-link-decoration" to={`/Character/${_id}`}>
         {traitsExist ? (
           <div className="d-flex flex-row flex-wrap justify-content-around mt-1">
             {traits.map((trait, index) => {
               return (
-                <div className="m-1 p-2 text-truncate border rounded-2 text-center">
+                <div
+                  key={index}
+                  className="m-1 p-2 text-truncate border rounded-2 text-center"
+                >
                   <h5>{trait.title}</h5>
                   <span>{trait.value}</span>
                 </div>
@@ -51,7 +54,7 @@ function CharacterCard({ content }) {
                 window.confirm(`Are you sure you want to delete ${title}?`);
               }}
             >
-              <i class="fa-solid fa-trash-can"></i>
+              <i className="fa-solid fa-trash-can"></i>
             </button>
             <button
               className="btn btn-warning btn-small flex-grow-1"
@@ -59,7 +62,7 @@ function CharacterCard({ content }) {
                 navigate(`/Character/${_id}`);
               }}
             >
-              <i class="fa-solid fa-pencil"></i>&nbsp;Edit
+              <i className="fa-solid fa-pencil"></i>&nbsp;Edit
               <span className="d-none d-sm-inline">&nbsp;Character</span>
             </button>
           </div>
@@ -73,7 +76,7 @@ function CharacterCard({ content }) {
                 navigate(`/Character/${copyID}`);
               }}
             >
-              <i class="fa-solid fa-copy"></i>&nbsp;Copy
+              <i className="fa-solid fa-copy"></i>&nbsp;Copy
               <span className="d-none d-sm-inline">&nbsp;Character</span>
             </button>
           </div>

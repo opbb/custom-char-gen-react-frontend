@@ -1,14 +1,42 @@
 import { Link, useNavigate } from "react-router-dom";
+import * as client from "./client";
+import { deleteTemplate } from "./templatesReducer";
+import { useDispatch } from "react-redux";
 function TemplateCard({ content }) {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { _id, ownerID, title, description, traits } = content;
   const ourID = "you";
   const traitsExist = traits !== undefined && traits.length >= 1;
   const weAreOwner = ownerID === ourID;
+
+  const handleDeleteTemplate = () => {
+    if (window.confirm(`Are you sure you want to delete ${title}?`)) {
+      client
+        .deleteTemplate(_id)
+        .then((result) => {
+          dispatch(deleteTemplate(_id));
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
+
+  const handleEditTemplate = () => {
+    navigate(`/Template/${_id}/Edit`);
+  };
+
+  const handleGenerateCharacter = () => {
+    // generate new character
+    const newCharID = "newCharID";
+    navigate(`/Character/${newCharID}`);
+  };
+
   return (
     <div>
-      <Link className="remove-link-decoration" to={`/Template/${_id}`}>
-        <div className="d-flex flex-row justify-content-between">
+      <div className="d-flex flex-row justify-content-between">
+        <Link className="remove-link-decoration" to={`/Template/${_id}`}>
           <div
             className={`text-truncate ${
               !weAreOwner ? "limit-card-header" : ""
@@ -16,16 +44,16 @@ function TemplateCard({ content }) {
           >
             <h3 className="mb-0">{title}</h3>
           </div>
-          {!weAreOwner ? (
-            <Link className="remove-link-decoration" to={`/Profile/${ownerID}`}>
-              <div className="text-truncate underline-on-hover">
-                By {ownerID}
-              </div>
-            </Link>
-          ) : (
-            <></>
-          )}
-        </div>
+        </Link>
+        {!weAreOwner ? (
+          <Link className="remove-link-decoration" to={`/Profile/${ownerID}`}>
+            <div className="text-truncate underline-on-hover">By {ownerID}</div>
+          </Link>
+        ) : (
+          <></>
+        )}
+      </div>
+      <Link className="remove-link-decoration" to={`/Template/${_id}`}>
         {description !== "" ? (
           <div className="fst-italic text-truncate">{description}</div>
         ) : (
@@ -35,7 +63,10 @@ function TemplateCard({ content }) {
           <div className="d-flex flex-row flex-wrap justify-content-around mt-1">
             {traits.map((trait, index) => {
               return (
-                <div className="text-truncate m-1 p-2 border rounded-2 text-center">
+                <div
+                  key={index}
+                  className="text-truncate m-1 p-2 border rounded-2 text-center"
+                >
                   <h5>{trait.title}</h5>
                   <span>{trait.randomOptionsID}</span>
                 </div>
@@ -51,31 +82,23 @@ function TemplateCard({ content }) {
           <div className="hstack gap-2">
             <button
               className="btn btn-danger btn-small"
-              onClick={() => {
-                window.confirm(`Are you sure you want to delete ${title}?`);
-              }}
+              onClick={handleDeleteTemplate}
             >
-              <i class="fa-solid fa-trash-can"></i>
+              <i className="fa-solid fa-trash-can"></i>
             </button>
             <button
               className="btn btn-warning btn-small flex-grow-1"
-              onClick={() => {
-                navigate(`/Template/${_id}/Edit`);
-              }}
+              onClick={handleEditTemplate}
             >
-              <i class="fa-solid fa-pencil"></i>&nbsp;Edit
+              <i className="fa-solid fa-pencil"></i>&nbsp;Edit
               <span className="d-none d-sm-inline">&nbsp;Template</span>
             </button>
             <button
               className="btn btn-success btn-small flex-grow-1"
               disabled={!traitsExist}
-              onClick={() => {
-                // generate new character
-                const newCharID = "newCharID";
-                navigate(`/Character/${newCharID}`);
-              }}
+              onClick={handleGenerateCharacter}
             >
-              <i class="fa-solid fa-dice-d20"></i>&nbsp;Generate
+              <i className="fa-solid fa-dice-d20"></i>&nbsp;Generate
               <span className="d-none d-sm-inline">&nbsp;Character</span>
             </button>
           </div>
@@ -89,7 +112,7 @@ function TemplateCard({ content }) {
                 navigate(`/Template/${copyID}`);
               }}
             >
-              <i class="fa-solid fa-copy"></i>&nbsp;Copy
+              <i className="fa-solid fa-copy"></i>&nbsp;Copy
               <span className="d-none d-sm-inline">&nbsp;Template</span>
             </button>
           </div>
