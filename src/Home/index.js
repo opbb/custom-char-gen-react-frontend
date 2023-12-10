@@ -5,8 +5,13 @@ import ListAccordionItem from "./listAccordionItem";
 import TemplateCard from "../Template/templateCard";
 import RandomOptionsCard from "../RandomOptions/randomOptionsCard";
 import CharacterCard from "../Character/characterCard";
-import SongCard from "../Search/songCard";
+import SongCard from "../ThemeSong/songCard";
 import { createBlankTemplate, findTemplatesByOwner } from "../Template/client";
+import {
+  findSongsBySearch,
+  findSongByID,
+  findSongsByID,
+} from "../ThemeSong/client";
 import {
   yourCharacters,
   yourRandomOptions,
@@ -45,9 +50,15 @@ function Home() {
     findTemplatesByOwner(user._id).then((templates) => {
       dispatch(setTemplates(templates));
     });
-  }, []);
+  }, [user._id, dispatch]);
 
-  const handleSearch = () => {
+  const testButtonOnClick = async () => {
+    const songIDs = ["3iISGrl3JKqPQ4GLqPjVkt", "2TuTrN1SVKWk3KGkaEuVlr"];
+    const songData = await findSongsByID(songIDs);
+    console.log(songData);
+  };
+
+  const handleSearch = async () => {
     console.log(`Searching for ${searchCategory} matching ${searchQuery}`);
     navigate(`/Search/${searchCategory}/${searchQuery}`);
   };
@@ -101,7 +112,7 @@ function Home() {
           className="btn btn-primary btn-sm text-nowrap"
           disabled={
             selectedTemplate === undefined ||
-            selectedTemplate.traits == undefined ||
+            selectedTemplate.traits === undefined ||
             selectedTemplate.traits.length < 1
           }
           onClick={handleMakeCharacter}
@@ -152,6 +163,9 @@ function Home() {
 
   return (
     <div className="d-flex flex-column">
+      <button className="btn btn-danger" onClick={testButtonOnClick}>
+        TEST BUTTON
+      </button>
       <div className="d-flex flex-column flex-md-row mb-2">
         <button className="btn btn-primary m-1" onClick={handleSearch}>
           Search

@@ -9,7 +9,7 @@ import Template from "./Template";
 import EditTemplate from "./Template/edit";
 import Character from "./Character";
 import Search from "./Search";
-import SongDetails from "./Search/songDetails";
+import SongDetails from "./ThemeSong/songDetails";
 import Home from "./Home";
 import RandomOptions from "./RandomOptions";
 import SiteHeader from "./siteHeader";
