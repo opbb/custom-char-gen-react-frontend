@@ -1,14 +1,14 @@
 import { Link, useNavigate } from "react-router-dom";
 import * as client from "./client";
 import { deleteTemplate } from "./templatesReducer";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 function TemplateCard({ content }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { _id, ownerID, title, description, traits } = content;
-  const ourID = "you";
+  const user = useSelector((state) => state.userReducer.user);
   const traitsExist = traits !== undefined && traits.length >= 1;
-  const weAreOwner = ownerID === ourID;
+  const weAreOwner = ownerID === (user && user.id);
 
   const handleDeleteTemplate = () => {
     if (window.confirm(`Are you sure you want to delete ${title}?`)) {

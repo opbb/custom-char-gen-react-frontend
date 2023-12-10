@@ -1,9 +1,11 @@
 import { Link, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 function RandomOptionsCard({ content }) {
   const navigate = useNavigate();
   const { _id, ownerID, title, description, type } = content;
   const OPTIONS_LIST_MAX_DISPLAYED = 10;
-
+  const user = useSelector((state) => state.userReducer.user);
+  const weAreOwner = ownerID === (user && user.id);
   let isList,
     isRange = false;
   let optionsList;
@@ -62,8 +64,6 @@ function RandomOptionsCard({ content }) {
     );
   }
 
-  const ourID = "you";
-  const weAreOwner = ownerID === ourID;
   return (
     <div>
       <div className="d-flex flex-row justify-content-between">

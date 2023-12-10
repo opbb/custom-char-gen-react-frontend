@@ -6,7 +6,11 @@ import TemplateCard from "../Template/templateCard";
 import RandomOptionsCard from "../RandomOptions/randomOptionsCard";
 import CharacterCard from "../Character/characterCard";
 import SongCard from "../ThemeSong/songCard";
-import { createBlankTemplate, findTemplatesByOwner } from "../Template/client";
+import {
+  createBlankTemplate,
+  findTemplatesByOwner,
+  getFeaturedTemplates,
+} from "../Template/client";
 import {
   findSongsBySearch,
   findSongByID,
@@ -19,7 +23,6 @@ import {
   featuredCharacters,
   featuredRandomOptions,
   featuredThemeSongs,
-  featuredTemplates,
 } from "../testData";
 import { addTemplate, setTemplates } from "../Template/templatesReducer";
 function Home() {
@@ -27,7 +30,7 @@ function Home() {
     (state) => state.templatesReducer.templates
   );
   //const user = useSelector((state) => state.templatesReducer.user);
-  const user = { _id: "you", usename: "Test User (PLACEHOLDER)" };
+  const user = useSelector((state) => state.userReducer.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -36,7 +39,8 @@ function Home() {
   const [selectedTemplate, setSelectedTemplate] = useState(
     yourTemplates.length >= 1 ? yourTemplates[0] : undefined
   );
-  const loggedIn = user !== undefined;
+  const [featuredTemplates, setFeaturedTemplates] = useState([]);
+  const loggedIn = user !== undefined && user !== null;
 
   // Save user friendly search category strings
   const searchCategoryValuesAndUIStrings = new Map();
@@ -47,10 +51,16 @@ function Home() {
 
   useEffect(() => {
     // TODO: Pull data from server
-    findTemplatesByOwner(user._id).then((templates) => {
-      dispatch(setTemplates(templates));
+    if (loggedIn) {
+      findTemplatesByOwner(user._id).then((templates) => {
+        dispatch(setTemplates(templates));
+      });
+    }
+    getFeaturedTemplates().then((templates) => {
+      console.log(templates);
+      setFeaturedTemplates(templates);
     });
-  }, [user._id, dispatch]);
+  }, [user, setTemplates, findTemplatesByOwner, dispatch]);
 
   const testButtonOnClick = async () => {
     const songIDs = ["3iISGrl3JKqPQ4GLqPjVkt", "2TuTrN1SVKWk3KGkaEuVlr"];

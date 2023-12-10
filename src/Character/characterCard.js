@@ -1,9 +1,10 @@
 import { Link, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 function CharacterCard({ content }) {
   const navigate = useNavigate();
   const { _id, ownerID, traits } = content;
-  const ourID = "you";
-  const weAreOwner = ownerID === ourID;
+  const user = useSelector((state) => state.userReducer.user);
+  const weAreOwner = ownerID === (user && user.id);
   const traitsExist = traits !== undefined && traits.length >= 1;
   const title = traitsExist ? traits[0].value : "Blank Character :|";
   return (
