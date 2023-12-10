@@ -36,12 +36,16 @@ function RandomOptionsCard({ content }) {
                 optionsList.length > OPTIONS_LIST_MAX_DISPLAYED
               ) {
                 return (
-                  <div className="list-group-item">{`and ${
+                  <div key={index} className="list-group-item">{`and ${
                     optionsList.length - (OPTIONS_LIST_MAX_DISPLAYED - 1)
                   } more options...`}</div>
                 );
               } else {
-                return <div className="list-group-item">{optionString}</div>;
+                return (
+                  <div key={index} className="list-group-item">
+                    {optionString}
+                  </div>
+                );
               }
             })
         ) : (
@@ -62,8 +66,8 @@ function RandomOptionsCard({ content }) {
   const weAreOwner = ownerID === ourID;
   return (
     <div>
-      <Link className="remove-link-decoration" to={`/RandomOptions/${_id}`}>
-        <div className="d-flex flex-row justify-content-between">
+      <div className="d-flex flex-row justify-content-between">
+        <Link className="remove-link-decoration" to={`/RandomOptions/${_id}`}>
           <div
             className={`text-truncate ${
               !weAreOwner ? "limit-card-header" : ""
@@ -71,16 +75,16 @@ function RandomOptionsCard({ content }) {
           >
             <h3 className="mb-0">{title}</h3>
           </div>
-          {!weAreOwner ? (
-            <Link className="remove-link-decoration" to={`/Profile/${ownerID}`}>
-              <div className="text-truncate underline-on-hover">
-                By {ownerID}
-              </div>
-            </Link>
-          ) : (
-            <></>
-          )}
-        </div>
+        </Link>
+        {!weAreOwner ? (
+          <Link className="remove-link-decoration" to={`/Profile/${ownerID}`}>
+            <div className="text-truncate underline-on-hover">By {ownerID}</div>
+          </Link>
+        ) : (
+          <></>
+        )}
+      </div>
+      <Link className="remove-link-decoration" to={`/RandomOptions/${_id}`}>
         {description !== "" ? (
           <div className="fst-italic text-truncate">{description}</div>
         ) : (
@@ -97,7 +101,7 @@ function RandomOptionsCard({ content }) {
                 window.confirm(`Are you sure you want to delete ${title}?`);
               }}
             >
-              <i class="fa-solid fa-trash-can"></i>
+              <i className="fa-solid fa-trash-can"></i>
             </button>
             <button
               className="btn btn-warning btn-small flex-grow-1"
@@ -105,7 +109,7 @@ function RandomOptionsCard({ content }) {
                 navigate(`/RandomOptions/${_id}`);
               }}
             >
-              <i class="fa-solid fa-pencil"></i>&nbsp;Edit
+              <i className="fa-solid fa-pencil"></i>&nbsp;Edit
               <span className="d-none d-sm-inline">
                 &nbsp;Random&nbsp;Options
               </span>
@@ -121,7 +125,7 @@ function RandomOptionsCard({ content }) {
                 navigate(`/RandomOptions/${copyID}`);
               }}
             >
-              <i class="fa-solid fa-copy"></i>&nbsp;Copy
+              <i className="fa-solid fa-copy"></i>&nbsp;Copy
               <span className="d-none d-sm-inline">
                 &nbsp;Random&nbsp;Options
               </span>
