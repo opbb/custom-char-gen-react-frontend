@@ -1,7 +1,10 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import * as client from "./client";
+import { deleteRandomOptions, addRandomOptions } from "./randomOptionsReducer";
 function RandomOptionsCard({ content }) {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { _id, ownerID, title, description, type } = content;
   const OPTIONS_LIST_MAX_DISPLAYED = 10;
   const user = useSelector((state) => state.userReducer.user);
@@ -10,6 +13,31 @@ function RandomOptionsCard({ content }) {
     isRange = false;
   let optionsList;
   let start, end, step;
+
+  const handleDeleteRandomOptions = () => {
+    if (window.confirm(`Are you sure you want to delete ${title}?`)) {
+      client
+        .deleteRandomOptions(_id)
+        .then((result) => {
+          dispatch(deleteRandomOptions(_id));
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
+
+  const handleCopyRandomOptions = () => {
+    client
+      .createRandomOptions(user._id, content)
+      .then((result) => {
+        dispatch(addRandomOptions(result));
+        navigate(`/RandomOptions/${result._id}`);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   switch (type) {
     case "list":
@@ -97,9 +125,7 @@ function RandomOptionsCard({ content }) {
           <div className="hstack gap-2">
             <button
               className="btn btn-danger btn-small"
-              onClick={() => {
-                window.confirm(`Are you sure you want to delete ${title}?`);
-              }}
+              onClick={handleDeleteRandomOptions}
             >
               <i className="fa-solid fa-trash-can"></i>
             </button>
@@ -116,21 +142,20 @@ function RandomOptionsCard({ content }) {
             </button>
           </div>
         ) : (
-          <div className="d-grid">
-            <button
-              className="btn btn-warning btn-small d-block"
-              onClick={() => {
-                // Copy RandomOptions
-                const copyID = "copyID";
-                navigate(`/RandomOptions/${copyID}`);
-              }}
-            >
-              <i className="fa-solid fa-copy"></i>&nbsp;Copy
-              <span className="d-none d-sm-inline">
-                &nbsp;Random&nbsp;Options
-              </span>
-            </button>
-          </div>
+          user !== null &&
+          user !== undefined && (
+            <div className="d-grid">
+              <button
+                className="btn btn-warning btn-small d-block"
+                onClick={handleCopyRandomOptions}
+              >
+                <i className="fa-solid fa-copy"></i>&nbsp;Copy
+                <span className="d-none d-sm-inline">
+                  &nbsp;Random&nbsp;Options
+                </span>
+              </button>
+            </div>
+          )
         )}
       </div>
     </div>

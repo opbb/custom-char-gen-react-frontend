@@ -1,36 +1,38 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { findTemplatesByOwner } from "./client";
+import { findCharactersByOwner } from "./client";
 
 // TODO: Add real user ID
-const initialTemplates = await findTemplatesByOwner("you");
+
+const initialCharacters = [];
 const initialState = {
-  templates: initialTemplates,
-  template: {
+  characters: initialCharacters,
+  character: {
     _id: "",
     ownerID: "",
     visibility: "",
-    title: "",
-    description: "",
     traits: [],
   },
 };
 
-const templatesSlice = createSlice({
-  name: "templates",
+const charactersSlice = createSlice({
+  name: "characters",
   initialState,
   reducers: {
-    addTemplate: (state, action) => {
+    addCharacter: (state, action) => {
       state.templates = [action.payload, ...state.templates];
     },
-    setTemplates: (state, action) => {
+    setCharacters: (state, action) => {
       state.templates = action.payload;
     },
-    deleteTemplate: (state, action) => {
+    setCharacters: (state, action) => {
+      state.template = action.payload;
+    },
+    deleteCharacter: (state, action) => {
       state.templates = state.templates.filter(
         (template) => template._id !== action.payload
       );
     },
-    updateTemplate: (state, action) => {
+    updateCharacter: (state, action) => {
       state.templates = state.templates.map((template) => {
         if (template._id === action.payload._id) {
           return action.payload;
@@ -39,17 +41,14 @@ const templatesSlice = createSlice({
         }
       });
     },
-    setTemplate: (state, action) => {
-      state.template = action.payload;
-    },
   },
 });
 
 export const {
-  addTemplate,
-  deleteTemplate,
-  updateTemplate,
-  setTemplate,
-  setTemplates,
-} = templatesSlice.actions;
-export default templatesSlice.reducer;
+  addCharacter,
+  deleteCharacter,
+  updateCharacter,
+  setCharacter,
+  setCharacters,
+} = charactersSlice.actions;
+export default charactersSlice.reducer;
