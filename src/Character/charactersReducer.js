@@ -24,7 +24,7 @@ const charactersSlice = createSlice({
     setCharacters: (state, action) => {
       state.characters = action.payload;
     },
-    setCharacters: (state, action) => {
+    setCharacter: (state, action) => {
       state.character = action.payload;
     },
     deleteCharacter: (state, action) => {

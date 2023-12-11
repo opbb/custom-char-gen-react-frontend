@@ -31,7 +31,7 @@ function CharacterCard({ content }) {
       .createCharacter(user._id, content)
       .then((result) => {
         dispatch(addCharacter(result));
-        navigate(`/Character/${result._id}`);
+        //navigate(`/Character/${result._id}`);
       })
       .catch((err) => {
         console.log(err);
@@ -90,7 +90,7 @@ function CharacterCard({ content }) {
             >
               <i className="fa-solid fa-trash-can"></i>
             </button>
-            <button
+            {/* <button
               className="btn btn-warning btn-small flex-grow-1"
               onClick={() => {
                 navigate(`/Character/${_id}`);
@@ -98,7 +98,7 @@ function CharacterCard({ content }) {
             >
               <i className="fa-solid fa-pencil"></i>&nbsp;Edit
               <span className="d-none d-sm-inline">&nbsp;Character</span>
-            </button>
+            </button> */}
           </div>
         ) : (
           user !== null &&

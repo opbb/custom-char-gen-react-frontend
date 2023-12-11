@@ -44,7 +44,7 @@ function TemplateCard({ content }) {
     if (user) {
       client.generateCharacterFromTemplate(_id, user._id).then((character) => {
         dispatch(addCharacter(character));
-        navigate(`/Character/${character._id}`);
+        //navigate(`/Character/${character._id}`);
       });
     }
   };
