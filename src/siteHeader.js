@@ -8,8 +8,10 @@ function SiteHeader() {
   return (
     <div className="d-flex align-items-center flex-nowrap mb-2">
       <Link to="/Home" className="remove-link-decoration flex-grow-1">
-        <h1 className="d-none d-lg-inline">Customizable Character Generator</h1>
-        <h1 className="d-inline d-lg-none">CustomCharGen</h1>
+        <h1 className="d-none d-lg-inline underline-on-hover">
+          Customizable Character Generator
+        </h1>
+        <h1 className="d-inline d-lg-none underline-on-hover">CustomCharGen</h1>
       </Link>
       <Link
         to={user ? "/Profile" : "/Login"}

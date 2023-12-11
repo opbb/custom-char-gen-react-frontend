@@ -37,7 +37,7 @@ function Profile() {
     fetchAccount();
   }, []);
   return (
-    <div className="w-50 p-3">
+    <div className="p-3">
       <h1>Account</h1>
       <hr />
       {account &&
@@ -101,10 +101,10 @@ function Profile() {
                 </select>
               </li>
             </ul>
-            <button className="btn btn-primary" onClick={save}>
+            <button className="btn btn-primary my-1" onClick={save}>
               Save
             </button>
-            <button className="btn btn-danger" onClick={signout}>
+            <button className="btn btn-danger my-1" onClick={signout}>
               Sign Out
             </button>
           </div>

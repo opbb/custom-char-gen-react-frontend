@@ -6,21 +6,25 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { findTemplateByID } from "./client";
+import { findRandomOptionsByID } from "../RandomOptions/client";
 function Template() {
   const { templateID } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const template = useSelector((state) => state.templatesReducer.template);
   const user = useSelector((state) => state.userReducer.user);
-
-  //const [ownerUsername, setOwnerUsername] = useState("");
+  const [allRandomOptions, setAllRandomOptions] = useState(null);
 
   useEffect(() => {
     // findUsernameById(templateID.ownerID).then((username) => {
     //   setOwnerUsername(username);
     // });
-    findTemplateByID(templateID).then((template) => {
+    findTemplateByID(templateID).then(async (template) => {
       dispatch(setTemplate(template));
+      const allRandomOptionsPromises = template.traits.map((trait) =>
+        findRandomOptionsByID(trait.randomOptionsID)
+      );
+      setAllRandomOptions(await Promise.all(allRandomOptionsPromises));
     });
   }, []);
 
@@ -53,7 +57,13 @@ function Template() {
               className="list-group-item text-truncate m-1 p-2 border rounded-2 text-center"
             >
               <h5>{trait.title}</h5>
-              <span>{trait.randomOptionsID}</span>
+              <span>
+                {allRandomOptions
+                  ? allRandomOptions.find(
+                      (r) => trait.randomOptionsID === r._id
+                    ).title
+                  : trait.randomOptionsID}
+              </span>
             </li>
           );
         })}
