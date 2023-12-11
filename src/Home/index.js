@@ -82,6 +82,7 @@ function Home() {
       dispatch(setTemplates(yTemplates));
       dispatch(setCharacters(yCharacters));
       dispatch(setRandomOptions(yRandomOptions));
+      setSelectedTemplate(yTemplates.length >= 1 ? yTemplates[0] : undefined);
     }
   };
 
@@ -101,7 +102,7 @@ function Home() {
       generateCharacterFromTemplate(selectedTemplate._id, user._id).then(
         (character) => {
           dispatch(addCharacter(character));
-          navigate(`/Character/${character._id}`);
+          //navigate(`/Character/${character._id}`);
         }
       );
     }
