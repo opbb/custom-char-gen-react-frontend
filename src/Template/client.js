@@ -18,6 +18,10 @@ export const findTemplatesByOwner = async (ownerID) => {
   const response = await axios.get(`${TEMPLATES_URL}/${ownerID}`);
   return response.data;
 };
+export const findTemplateByID = async (templateID) => {
+  const response = await axios.get(`${TEMPLATE_URL}/${templateID}`);
+  return response.data;
+};
 export const getFeaturedTemplates = async () => {
   const response = await axios.get(`${TEMPLATES_URL}/featured`);
   return response.data;

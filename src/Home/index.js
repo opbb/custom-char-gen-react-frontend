@@ -12,34 +12,51 @@ import {
   getFeaturedTemplates,
 } from "../Template/client";
 import {
+  createBlankRandomOptions,
+  findMultipleRandomOptionsByOwner,
+  getFeaturedMultipleRandomOptions,
+} from "../RandomOptions/client";
+import {
+  findCharactersByOwner,
+  getFeaturedCharacters,
+} from "../Character/client";
+import {
   findSongsBySearch,
   findSongByID,
   findSongsByID,
 } from "../ThemeSong/client";
-import {
-  yourCharacters,
-  yourRandomOptions,
-  yourThemeSongs,
-  featuredCharacters,
-  featuredRandomOptions,
-  featuredThemeSongs,
-} from "../testData";
 import { addTemplate, setTemplates } from "../Template/templatesReducer";
+import { setCharacters } from "../Character/charactersReducer";
+import {
+  addRandomOptions,
+  setRandomOptions,
+} from "../RandomOptions/randomOptionsReducer";
 function Home() {
   const yourTemplates = useSelector(
     (state) => state.templatesReducer.templates
   );
+  const yourCharacters = useSelector(
+    (state) => state.charactersReducer.characters
+  );
+  const yourRandomOptions = useSelector(
+    (state) => state.randomOptionsReducer.allRandomOptions
+  );
+  const yourThemeSongs = [];
+  const featuredThemeSongs = [];
+
   //const user = useSelector((state) => state.templatesReducer.user);
   const user = useSelector((state) => state.userReducer.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [searchCategory, setSearchCategory] = useState("Templates");
+  const [searchCategory, setSearchCategory] = useState("ThemeSongs");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTemplate, setSelectedTemplate] = useState(
     yourTemplates.length >= 1 ? yourTemplates[0] : undefined
   );
   const [featuredTemplates, setFeaturedTemplates] = useState([]);
+  const [featuredCharacters, setFeaturedCharacters] = useState([]);
+  const [featuredRandomOptions, setFeaturedRandomOptions] = useState([]);
   const loggedIn = user !== undefined && user !== null;
 
   // Save user friendly search category strings
@@ -49,33 +66,50 @@ function Home() {
   searchCategoryValuesAndUIStrings.set("RandomOptions", "Random Options");
   searchCategoryValuesAndUIStrings.set("ThemeSongs", "Theme Songs");
 
-  useEffect(() => {
+  const initializeData = async () => {
     // TODO: Pull data from server
-    if (loggedIn) {
-      findTemplatesByOwner(user._id).then((templates) => {
-        dispatch(setTemplates(templates));
-      });
-    }
-    getFeaturedTemplates().then((templates) => {
-      console.log(templates);
-      setFeaturedTemplates(templates);
-    });
-  }, [user, setTemplates, findTemplatesByOwner, dispatch]);
+    const yourPromisesToAwait = [];
+    const featuredPromisesToAwait = [];
 
-  const testButtonOnClick = async () => {
-    const songIDs = ["3iISGrl3JKqPQ4GLqPjVkt", "2TuTrN1SVKWk3KGkaEuVlr"];
-    const songData = await findSongsByID(songIDs);
-    console.log(songData);
+    featuredPromisesToAwait.push(getFeaturedTemplates());
+    featuredPromisesToAwait.push(getFeaturedCharacters());
+    featuredPromisesToAwait.push(getFeaturedMultipleRandomOptions());
+
+    const [fTemplates, fCharacters, fRandomOptions] = await Promise.all(
+      featuredPromisesToAwait
+    );
+
+    setFeaturedTemplates(fTemplates);
+    setFeaturedCharacters(fCharacters);
+    setFeaturedRandomOptions(fRandomOptions);
+
+    if (loggedIn) {
+      yourPromisesToAwait.push(findTemplatesByOwner(user._id));
+      yourPromisesToAwait.push(findCharactersByOwner(user._id));
+      yourPromisesToAwait.push(findMultipleRandomOptionsByOwner(user._id));
+
+      const [yTemplates, yCharacters, yRandomOptions] = await Promise.all(
+        yourPromisesToAwait
+      );
+
+      dispatch(setTemplates(yTemplates));
+      dispatch(setCharacters(yCharacters));
+      dispatch(setRandomOptions(yRandomOptions));
+    }
   };
 
+  useEffect(() => {
+    initializeData();
+  }, []);
+
   const handleSearch = async () => {
-    console.log(`Searching for ${searchCategory} matching ${searchQuery}`);
     navigate(`/Search/${searchCategory}/${searchQuery}`);
   };
 
   const handleMakeTemplate = () => {
-    // Make request from the server
+    console.log("making new template");
     createBlankTemplate(user._id).then((template) => {
+      console.log(template);
       dispatch(addTemplate(template));
       navigate(`/Template/${template._id}/Edit`);
     });
@@ -90,6 +124,13 @@ function Home() {
     //});
   };
 
+  const handleMakeRandomOptions = () => {
+    createBlankRandomOptions(user._id).then((randomOptions) => {
+      dispatch(addRandomOptions(randomOptions));
+      navigate(`/RandomOptions/${randomOptions._id}`);
+    });
+  };
+
   const AboveYourTemplatesComponent = () => {
     return (
       <button className="btn btn-primary btn-sm" onClick={handleMakeTemplate}>
@@ -101,15 +142,7 @@ function Home() {
     return (
       <button
         className="btn btn-primary btn-sm"
-        onClick={() => {
-          // Make new blank RandomOptions
-          const randomOptionsID = "GetNewID";
-          if (randomOptionsID !== undefined) {
-            navigate(`/RandomOptions/${randomOptionsID}`);
-          } else {
-            // Inform user
-          }
-        }}
+        onClick={handleMakeRandomOptions}
       >
         <i className="fa-solid fa-plus"></i> New Random Options
       </button>
@@ -173,9 +206,6 @@ function Home() {
 
   return (
     <div className="d-flex flex-column">
-      <button className="btn btn-danger" onClick={testButtonOnClick}>
-        TEST BUTTON
-      </button>
       <div className="d-flex flex-column flex-md-row mb-2">
         <button className="btn btn-primary m-1" onClick={handleSearch}>
           Search
@@ -186,9 +216,15 @@ function Home() {
           onChange={(e) => setSearchCategory(e.target.value)}
           value={searchCategory}
         >
-          <option value="Templates">Templates</option>
-          <option value="Characters">Characters</option>
-          <option value="RandomOptions">Random Options</option>
+          <option value="Templates" disabled={true}>
+            Templates (Planned)
+          </option>
+          <option value="Characters" disabled={true}>
+            Characters (Planned)
+          </option>
+          <option value="RandomOptions" disabled={true}>
+            Random Options (Planned)
+          </option>
           <option value="ThemeSongs">Theme Songs</option>
         </select>
         <input

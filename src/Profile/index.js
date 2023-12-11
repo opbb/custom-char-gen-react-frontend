@@ -2,11 +2,13 @@ import { useParams } from "react-router";
 import * as client from "./client";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { setUser } from "./userReducer";
 function Profile() {
   const { userID } = useParams();
   const user = useSelector((state) => state.userReducer.user);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const isOurProfile = userID === undefined;
 
   const [account, setAccount] = useState(null);
@@ -24,6 +26,7 @@ function Profile() {
   };
   const signout = async () => {
     await client.signout();
+    dispatch(setUser(null));
     navigate("/Login");
   };
 

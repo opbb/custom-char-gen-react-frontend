@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import * as client from "./client";
-import { deleteTemplate } from "./templatesReducer";
+import { deleteTemplate, addTemplate } from "./templatesReducer";
 import { useDispatch, useSelector } from "react-redux";
 function TemplateCard({ content }) {
   const navigate = useNavigate();
@@ -8,7 +8,7 @@ function TemplateCard({ content }) {
   const { _id, ownerID, title, description, traits } = content;
   const user = useSelector((state) => state.userReducer.user);
   const traitsExist = traits !== undefined && traits.length >= 1;
-  const weAreOwner = ownerID === (user && user.id);
+  const weAreOwner = ownerID === (user && user._id);
 
   const handleDeleteTemplate = () => {
     if (window.confirm(`Are you sure you want to delete ${title}?`)) {
@@ -31,6 +31,18 @@ function TemplateCard({ content }) {
     // generate new character
     const newCharID = "newCharID";
     navigate(`/Character/${newCharID}`);
+  };
+
+  const handleCopyTemplate = () => {
+    client
+      .createTemplate(user._id, content)
+      .then((result) => {
+        dispatch(addTemplate(result));
+        navigate(`/Template/${result._id}`);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (
@@ -103,19 +115,18 @@ function TemplateCard({ content }) {
             </button>
           </div>
         ) : (
-          <div className="d-grid">
-            <button
-              className="btn btn-warning btn-small d-block"
-              onClick={() => {
-                // Copy Template
-                const copyID = "copyID";
-                navigate(`/Template/${copyID}`);
-              }}
-            >
-              <i className="fa-solid fa-copy"></i>&nbsp;Copy
-              <span className="d-none d-sm-inline">&nbsp;Template</span>
-            </button>
-          </div>
+          user !== null &&
+          user !== undefined && (
+            <div className="d-grid">
+              <button
+                className="btn btn-warning btn-small d-block"
+                onClick={handleCopyTemplate}
+              >
+                <i className="fa-solid fa-copy"></i>&nbsp;Copy
+                <span className="d-none d-sm-inline">&nbsp;Template</span>
+              </button>
+            </div>
+          )
         )}
       </div>
     </div>

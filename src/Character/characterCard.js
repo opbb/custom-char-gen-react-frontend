@@ -1,12 +1,41 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import * as client from "./client";
+import { deleteCharacter, addCharacter } from "./charactersReducer";
 function CharacterCard({ content }) {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { _id, ownerID, traits } = content;
   const user = useSelector((state) => state.userReducer.user);
   const weAreOwner = ownerID === (user && user.id);
   const traitsExist = traits !== undefined && traits.length >= 1;
   const title = traitsExist ? traits[0].value : "Blank Character :|";
+
+  const handleDeleteCharacter = () => {
+    if (window.confirm(`Are you sure you want to delete ${title}?`)) {
+      client
+        .deleteCharacter(_id)
+        .then((result) => {
+          dispatch(deleteCharacter(_id));
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
+
+  const handleCopyCharacter = () => {
+    client
+      .createCharacter(user._id, content)
+      .then((result) => {
+        dispatch(addCharacter(result));
+        navigate(`/Character/${result._id}`);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <div>
       <div className="d-flex flex-row justify-content-between">
@@ -51,9 +80,7 @@ function CharacterCard({ content }) {
           <div className="hstack gap-2">
             <button
               className="btn btn-danger btn-small"
-              onClick={() => {
-                window.confirm(`Are you sure you want to delete ${title}?`);
-              }}
+              onClick={handleDeleteCharacter}
             >
               <i className="fa-solid fa-trash-can"></i>
             </button>
@@ -68,19 +95,18 @@ function CharacterCard({ content }) {
             </button>
           </div>
         ) : (
-          <div className="d-grid">
-            <button
-              className="btn btn-warning btn-small d-block"
-              onClick={() => {
-                // Copy Character
-                const copyID = "copyID";
-                navigate(`/Character/${copyID}`);
-              }}
-            >
-              <i className="fa-solid fa-copy"></i>&nbsp;Copy
-              <span className="d-none d-sm-inline">&nbsp;Character</span>
-            </button>
-          </div>
+          user !== null &&
+          user !== undefined && (
+            <div className="d-grid">
+              <button
+                className="btn btn-warning btn-small d-block"
+                onClick={handleCopyCharacter}
+              >
+                <i className="fa-solid fa-copy"></i>&nbsp;Copy
+                <span className="d-none d-sm-inline">&nbsp;Character</span>
+              </button>
+            </div>
+          )
         )}
       </div>
     </div>

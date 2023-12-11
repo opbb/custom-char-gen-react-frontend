@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { findTemplatesByOwner } from "./client";
 
 // TODO: Add real user ID
-const initialTemplates = await findTemplatesByOwner("you");
+const initialTemplates = [];
 const initialState = {
   templates: initialTemplates,
   template: {
@@ -25,6 +25,9 @@ const templatesSlice = createSlice({
     setTemplates: (state, action) => {
       state.templates = action.payload;
     },
+    setTemplate: (state, action) => {
+      state.template = action.payload;
+    },
     deleteTemplate: (state, action) => {
       state.templates = state.templates.filter(
         (template) => template._id !== action.payload
@@ -38,9 +41,6 @@ const templatesSlice = createSlice({
           return template;
         }
       });
-    },
-    setTemplate: (state, action) => {
-      state.template = action.payload;
     },
   },
 });
