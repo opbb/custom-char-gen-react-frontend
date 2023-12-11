@@ -19,25 +19,25 @@ const charactersSlice = createSlice({
   initialState,
   reducers: {
     addCharacter: (state, action) => {
-      state.templates = [action.payload, ...state.templates];
+      state.characters = [action.payload, ...state.characters];
     },
     setCharacters: (state, action) => {
-      state.templates = action.payload;
+      state.characters = action.payload;
     },
     setCharacters: (state, action) => {
-      state.template = action.payload;
+      state.character = action.payload;
     },
     deleteCharacter: (state, action) => {
-      state.templates = state.templates.filter(
-        (template) => template._id !== action.payload
+      state.characters = state.characters.filter(
+        (character) => character._id !== action.payload
       );
     },
     updateCharacter: (state, action) => {
-      state.templates = state.templates.map((template) => {
-        if (template._id === action.payload._id) {
+      state.characters = state.characters.map((character) => {
+        if (character._id === action.payload._id) {
           return action.payload;
         } else {
-          return template;
+          return character;
         }
       });
     },

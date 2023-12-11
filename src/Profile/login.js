@@ -12,10 +12,9 @@ function Login() {
   const navigate = useNavigate();
   const login = async () => {
     const user = await client.signin(credentials);
-    console.log(user);
     if (user !== null) {
       await dispatch(setUser(user));
-      navigate("/Profile");
+      navigate("/Home");
     }
   };
   return (

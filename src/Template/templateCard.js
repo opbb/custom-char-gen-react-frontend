@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import * as client from "./client";
 import { deleteTemplate, addTemplate } from "./templatesReducer";
 import { useDispatch, useSelector } from "react-redux";
+import { addCharacter } from "../Character/charactersReducer";
 function TemplateCard({ content }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -28,9 +29,12 @@ function TemplateCard({ content }) {
   };
 
   const handleGenerateCharacter = () => {
-    // generate new character
-    const newCharID = "newCharID";
-    navigate(`/Character/${newCharID}`);
+    if (user) {
+      client.generateCharacterFromTemplate(_id, user._id).then((character) => {
+        dispatch(addCharacter(character));
+        navigate(`/Character/${character._id}`);
+      });
+    }
   };
 
   const handleCopyTemplate = () => {

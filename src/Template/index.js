@@ -30,7 +30,11 @@ function Template() {
 
   return (
     <div>
-      <h2>{template.title ? template.title : "Unnamed Template"}</h2>
+      <h2>
+        {template.title && template.title !== ""
+          ? template.title
+          : "Unnamed Template"}
+      </h2>
       {/* <Link
         className="remove-link-decoration"
         to={`/Profile/${template.ownerID}`}

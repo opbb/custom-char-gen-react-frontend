@@ -10,6 +10,7 @@ import {
   createBlankTemplate,
   findTemplatesByOwner,
   getFeaturedTemplates,
+  generateCharacterFromTemplate,
 } from "../Template/client";
 import {
   createBlankRandomOptions,
@@ -26,7 +27,7 @@ import {
   findSongsByID,
 } from "../ThemeSong/client";
 import { addTemplate, setTemplates } from "../Template/templatesReducer";
-import { setCharacters } from "../Character/charactersReducer";
+import { setCharacters, addCharacter } from "../Character/charactersReducer";
 import {
   addRandomOptions,
   setRandomOptions,
@@ -115,13 +116,15 @@ function Home() {
     });
   };
 
-  const handleMakeCharacter = () => {
-    // Make request from the server
-    //createTemplate(user._id).then((template) => {
-    //dispatch(addTemplate(template));
-    const characterID = `newCharacterFrom${selectedTemplate}ID`;
-    navigate(`/Character/${characterID}`);
-    //});
+  const handleGenerateCharacter = () => {
+    if (user && selectedTemplate) {
+      generateCharacterFromTemplate(selectedTemplate._id, user._id).then(
+        (character) => {
+          dispatch(addCharacter(character));
+          navigate(`/Character/${character._id}`);
+        }
+      );
+    }
   };
 
   const handleMakeRandomOptions = () => {
@@ -158,7 +161,7 @@ function Home() {
             selectedTemplate.traits === undefined ||
             selectedTemplate.traits.length < 1
           }
-          onClick={handleMakeCharacter}
+          onClick={handleGenerateCharacter}
         >
           <i className="fa-solid fa-plus"></i> New Character
         </button>

@@ -7,7 +7,6 @@ function CharacterCard({ content }) {
   const dispatch = useDispatch();
   const { _id, ownerID, traits } = content;
   const user = useSelector((state) => state.userReducer.user);
-  const weAreOwner = ownerID === (user && user.id);
   const traitsExist = traits !== undefined && traits.length >= 1;
   const title = traitsExist ? traits[0].value : "Blank Character :|";
 
@@ -42,13 +41,13 @@ function CharacterCard({ content }) {
         <Link className="remove-link-decoration" to={`/Character/${_id}`}>
           <div
             className={`text-truncate ${
-              !weAreOwner ? "limit-card-header" : ""
+              !(ownerID === (user && user.id)) ? "limit-card-header" : ""
             }`}
           >
             <h3 className="mb-0">{title}</h3>
           </div>
         </Link>
-        {!weAreOwner ? (
+        {!(ownerID === (user && user.id)) ? (
           <Link className="remove-link-decoration" to={`/Profile/${ownerID}`}>
             <div className="text-truncate underline-on-hover">By {ownerID}</div>
           </Link>
@@ -76,7 +75,7 @@ function CharacterCard({ content }) {
         )}
       </Link>
       <div className="mt-2">
-        {weAreOwner ? (
+        {ownerID === (user && user.id) ? (
           <div className="hstack gap-2">
             <button
               className="btn btn-danger btn-small"

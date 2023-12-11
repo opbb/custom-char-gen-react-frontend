@@ -10,6 +10,12 @@ export const createTemplate = async (ownerID, template) => {
   const response = await axios.post(`${TEMPLATE_URL}/${ownerID}`, template);
   return response.data;
 };
+export const generateCharacterFromTemplate = async (templateID, ownerID) => {
+  const response = await axios.post(
+    `${TEMPLATE_URL}/${templateID}/${ownerID}/generate`
+  );
+  return response.data;
+};
 export const createBlankTemplate = async (ownerID) => {
   const response = await axios.post(`${TEMPLATE_URL}/${ownerID}/blank`);
   return response.data;
