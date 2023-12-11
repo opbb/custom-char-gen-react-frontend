@@ -3,6 +3,9 @@ import * as client from "./client";
 import { deleteTemplate, addTemplate } from "./templatesReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { addCharacter } from "../Character/charactersReducer";
+import { useState, useEffect } from "react";
+import { findUsernameById } from "../Profile/client";
+import { findRandomOptionsByID } from "../RandomOptions/client";
 function TemplateCard({ content }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -10,6 +13,15 @@ function TemplateCard({ content }) {
   const user = useSelector((state) => state.userReducer.user);
   const traitsExist = traits !== undefined && traits.length >= 1;
   const weAreOwner = ownerID === (user && user._id);
+  const [ownerUsername, setOwnerUsername] = useState("");
+  const [allRandomOptions, setAllRandomOptions] = useState(null);
+
+  const initializeAllRandomOptions = async () => {
+    const allRandomOptionsPromises = traits.map((trait) =>
+      findRandomOptionsByID(trait.randomOptionsID)
+    );
+    setAllRandomOptions(await Promise.all(allRandomOptionsPromises));
+  };
 
   const handleDeleteTemplate = () => {
     if (window.confirm(`Are you sure you want to delete ${title}?`)) {
@@ -49,6 +61,13 @@ function TemplateCard({ content }) {
       });
   };
 
+  useEffect(() => {
+    findUsernameById(ownerID).then((username) => {
+      setOwnerUsername(username);
+    });
+    initializeAllRandomOptions();
+  }, []);
+
   return (
     <div>
       <div className="d-flex flex-row justify-content-between">
@@ -63,7 +82,9 @@ function TemplateCard({ content }) {
         </Link>
         {!weAreOwner ? (
           <Link className="remove-link-decoration" to={`/Profile/${ownerID}`}>
-            <div className="text-truncate underline-on-hover">By {ownerID}</div>
+            <div className="text-truncate underline-on-hover">
+              By {ownerUsername}
+            </div>
           </Link>
         ) : (
           <></>
@@ -78,13 +99,17 @@ function TemplateCard({ content }) {
         {traits ? (
           <div className="d-flex flex-row flex-wrap justify-content-around mt-1">
             {traits.map((trait, index) => {
+              const randomOptionsTitleOrID = allRandomOptions
+                ? allRandomOptions.find((r) => trait.randomOptionsID === r._id)
+                    .title
+                : trait.randomOptionsID;
               return (
                 <div
                   key={index}
                   className="text-truncate m-1 p-2 border rounded-2 text-center"
                 >
                   <h5>{trait.title}</h5>
-                  <span>{trait.randomOptionsID}</span>
+                  <span>{randomOptionsTitleOrID}</span>
                 </div>
               );
             })}

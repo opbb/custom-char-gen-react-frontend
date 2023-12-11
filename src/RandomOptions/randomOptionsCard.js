@@ -2,10 +2,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import * as client from "./client";
 import { deleteRandomOptions, addRandomOptions } from "./randomOptionsReducer";
+import { useState, useEffect } from "react";
+import { findUsernameById } from "../Profile/client";
 function RandomOptionsCard({ content }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { _id, ownerID, title, description, type } = content;
+  const [ownerUsername, setOwnerUsername] = useState("");
   const OPTIONS_LIST_MAX_DISPLAYED = 10;
   const user = useSelector((state) => state.userReducer.user);
   const weAreOwner = ownerID === (user && user.id);
@@ -92,6 +95,12 @@ function RandomOptionsCard({ content }) {
     );
   }
 
+  useEffect(() => {
+    findUsernameById(ownerID).then((username) => {
+      setOwnerUsername(username);
+    });
+  }, []);
+
   return (
     <div>
       <div className="d-flex flex-row justify-content-between">
@@ -108,7 +117,9 @@ function RandomOptionsCard({ content }) {
         </Link>
         {!weAreOwner ? (
           <Link className="remove-link-decoration" to={`/Profile/${ownerID}`}>
-            <div className="text-truncate underline-on-hover">By {ownerID}</div>
+            <div className="text-truncate underline-on-hover">
+              By {ownerUsername}
+            </div>
           </Link>
         ) : (
           <></>

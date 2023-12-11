@@ -6,6 +6,7 @@ import TemplateCard from "../Template/templateCard";
 import RandomOptionsCard from "../RandomOptions/randomOptionsCard";
 import CharacterCard from "../Character/characterCard";
 import SongCard from "../ThemeSong/songCard";
+import SearchBar from "../Search/searchBar";
 import {
   createBlankTemplate,
   findTemplatesByOwner,
@@ -21,11 +22,6 @@ import {
   findCharactersByOwner,
   getFeaturedCharacters,
 } from "../Character/client";
-import {
-  findSongsBySearch,
-  findSongByID,
-  findSongsByID,
-} from "../ThemeSong/client";
 import { addTemplate, setTemplates } from "../Template/templatesReducer";
 import { setCharacters, addCharacter } from "../Character/charactersReducer";
 import {
@@ -50,8 +46,6 @@ function Home() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [searchCategory, setSearchCategory] = useState("ThemeSongs");
-  const [searchQuery, setSearchQuery] = useState("");
   const [selectedTemplate, setSelectedTemplate] = useState(
     yourTemplates.length >= 1 ? yourTemplates[0] : undefined
   );
@@ -59,13 +53,6 @@ function Home() {
   const [featuredCharacters, setFeaturedCharacters] = useState([]);
   const [featuredRandomOptions, setFeaturedRandomOptions] = useState([]);
   const loggedIn = user !== undefined && user !== null;
-
-  // Save user friendly search category strings
-  const searchCategoryValuesAndUIStrings = new Map();
-  searchCategoryValuesAndUIStrings.set("Templates", "Templates");
-  searchCategoryValuesAndUIStrings.set("Characters", "Characters");
-  searchCategoryValuesAndUIStrings.set("RandomOptions", "Random Options");
-  searchCategoryValuesAndUIStrings.set("ThemeSongs", "Theme Songs");
 
   const initializeData = async () => {
     // TODO: Pull data from server
@@ -92,7 +79,6 @@ function Home() {
       const [yTemplates, yCharacters, yRandomOptions] = await Promise.all(
         yourPromisesToAwait
       );
-
       dispatch(setTemplates(yTemplates));
       dispatch(setCharacters(yCharacters));
       dispatch(setRandomOptions(yRandomOptions));
@@ -103,14 +89,8 @@ function Home() {
     initializeData();
   }, []);
 
-  const handleSearch = async () => {
-    navigate(`/Search/${searchCategory}/${searchQuery}`);
-  };
-
   const handleMakeTemplate = () => {
-    console.log("making new template");
     createBlankTemplate(user._id).then((template) => {
-      console.log(template);
       dispatch(addTemplate(template));
       navigate(`/Template/${template._id}/Edit`);
     });
@@ -199,7 +179,7 @@ function Home() {
         className="btn btn-primary btn-sm"
         onClick={() => {
           // Search for ThemeSongs
-          navigate("/Search/ThemeSongs");
+          navigate("/Search/ThemeSongs/");
         }}
       >
         <i className="fa-solid fa-magnifying-glass"></i> Search for Theme Songs
@@ -209,36 +189,7 @@ function Home() {
 
   return (
     <div className="d-flex flex-column">
-      <div className="d-flex flex-column flex-md-row mb-2">
-        <button className="btn btn-primary m-1" onClick={handleSearch}>
-          Search
-        </button>
-        <select
-          className="btn btn-secondary m-1"
-          title="Search Category"
-          onChange={(e) => setSearchCategory(e.target.value)}
-          value={searchCategory}
-        >
-          <option value="Templates" disabled={true}>
-            Templates (Planned)
-          </option>
-          <option value="Characters" disabled={true}>
-            Characters (Planned)
-          </option>
-          <option value="RandomOptions" disabled={true}>
-            Random Options (Planned)
-          </option>
-          <option value="ThemeSongs">Theme Songs</option>
-        </select>
-        <input
-          className="form-control m-1"
-          value={searchQuery}
-          placeholder={`Search for ${searchCategoryValuesAndUIStrings
-            .get(searchCategory)
-            .toLowerCase()}`}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-      </div>
+      <SearchBar />
       <div className="accordion accordion-flush" id="homeContent">
         {loggedIn ? (
           <div className="accordion-item">
@@ -304,7 +255,7 @@ function Home() {
               aria-expanded="false"
               aria-controls="featuredStuff"
             >
-              Daily Featured Content
+              All Stuff
             </button>
           </h2>
           <div id="featuredStuff" className="accordion-collapse collapse show">

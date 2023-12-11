@@ -3,8 +3,9 @@ const BASE_API = process.env.REACT_APP_BASE_API_URL;
 const SONGS_URL = `${BASE_API}/api/songs`;
 const SONG_URL = `${BASE_API}/api/song`;
 export const findSongsBySearch = async (searchQuery, limit) => {
+  const safeLimit = limit === undefined ? 10 : limit;
   const response = await axios.get(
-    `${SONGS_URL}/search/${limit}/${searchQuery}`
+    `${SONGS_URL}/search/${safeLimit}/${searchQuery}`
   );
   return response.data;
 };

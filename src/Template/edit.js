@@ -29,7 +29,6 @@ function EditTemplate() {
       if (user && user._id === template.ownerID) {
         dispatch(setTemplate(template));
         findMultipleRandomOptionsByOwner(user._id).then((yourRandomOptions) => {
-          console.log(yourRandomOptions);
           dispatch(setRandomOptions(yourRandomOptions));
         });
       } else {
