@@ -10,6 +10,8 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { findTemplateByID } from "./client";
+import { findMultipleRandomOptionsByOwner } from "../RandomOptions/client";
+import { setRandomOptions } from "../RandomOptions/randomOptionsReducer";
 function EditTemplate() {
   const { templateID } = useParams();
   const dispatch = useDispatch();
@@ -24,10 +26,15 @@ function EditTemplate() {
     //   setOwnerUsername(username);
     // });
     findTemplateByID(templateID).then((template) => {
-      if (!user || user._id !== template.ownerID) {
+      if (user && user._id === template.ownerID) {
+        dispatch(setTemplate(template));
+        findMultipleRandomOptionsByOwner(user._id).then((yourRandomOptions) => {
+          console.log(yourRandomOptions);
+          dispatch(setRandomOptions(yourRandomOptions));
+        });
+      } else {
         navigate(`/Template/${templateID}`);
       }
-      dispatch(setTemplate(template));
     });
   }, []);
 
@@ -160,11 +167,13 @@ function EditTemplate() {
                 }}
               >
                 {allRandomOptions.map((randomOptions) => {
-                  <option value={randomOptions._id}>
-                    {randomOptions.title
-                      ? randomOptions.title
-                      : "Unnamed Random Options"}
-                  </option>;
+                  return (
+                    <option value={randomOptions._id}>
+                      {randomOptions.title
+                        ? randomOptions.title
+                        : "Unnamed Random Options"}
+                    </option>
+                  );
                 })}
               </select>
               <button

@@ -87,7 +87,7 @@ function RandomOptionsCard({ content }) {
   if (isRange) {
     randomOptionsBody = (
       <h5 className="text-wrap">
-        The range from {start} to {end} inclusive, in steps of {step}
+        The range from {start} to {end} inclusive
       </h5>
     );
   }
@@ -101,7 +101,9 @@ function RandomOptionsCard({ content }) {
               !weAreOwner ? "limit-card-header" : ""
             }`}
           >
-            <h3 className="mb-0">{title}</h3>
+            <h3 className="mb-0">
+              {title && title !== "" ? title : "Unnamed Random Options"}
+            </h3>
           </div>
         </Link>
         {!weAreOwner ? (
@@ -143,7 +145,8 @@ function RandomOptionsCard({ content }) {
           </div>
         ) : (
           user !== null &&
-          user !== undefined && (
+          user !== undefined &&
+          ownerID !== user._id && (
             <div className="d-grid">
               <button
                 className="btn btn-warning btn-small d-block"

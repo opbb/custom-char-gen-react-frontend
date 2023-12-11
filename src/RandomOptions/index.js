@@ -59,7 +59,7 @@ function RandomOptions() {
       <h5>Title: </h5>
       <input
         className="form-control my-2"
-        disabled={!user || user._id !== randomOptions._id}
+        disabled={!user || user._id !== randomOptions.ownerID}
         value={randomOptions.title}
         onChange={(e) =>
           dispatch(
@@ -78,7 +78,7 @@ function RandomOptions() {
       <h5>Description: </h5>
       <input
         className="form-control my-2"
-        disabled={!user || user._id !== randomOptions._id}
+        disabled={!user || user._id !== randomOptions.ownerID}
         value={randomOptions.description}
         onChange={(e) =>
           dispatch(
@@ -92,7 +92,7 @@ function RandomOptions() {
       <h5>Visibility: </h5>
       <select
         className="form-control my-2"
-        disabled={!user || user._id !== randomOptions._id}
+        disabled={!user || user._id !== randomOptions.ownerID}
         value={randomOptions.visibility}
         onChange={(e) =>
           dispatch(
@@ -110,7 +110,7 @@ function RandomOptions() {
       <select
         className="form-control my-2"
         value={randomOptions.type}
-        disabled={!user || user._id !== randomOptions._id}
+        disabled={!user || user._id !== randomOptions.ownerID}
         onChange={(e) =>
           dispatch(
             setOneRandomOptions({ ...randomOptions, type: e.target.value })
@@ -136,7 +136,7 @@ function RandomOptions() {
                   <input
                     className="form-control my-2"
                     value={option}
-                    disabled={!user || user._id !== randomOptions._id}
+                    disabled={!user || user._id !== randomOptions.ownerID}
                     onChange={(e) => {
                       const alteredOptions = randomOptions.optionsList.map(
                         (o, i) => (i === index ? e.target.value : o)
@@ -174,7 +174,7 @@ function RandomOptions() {
           {user && user._id === randomOptions.ownerID && (
             <button
               className="btn btn-success"
-              disabled={!user || user._id !== randomOptions._id}
+              disabled={!user || user._id !== randomOptions.ownerID}
               onClick={() => {
                 dispatch(
                   setOneRandomOptions({
@@ -194,7 +194,7 @@ function RandomOptions() {
           <input
             className="form-control my-2"
             value={randomOptions.start}
-            disabled={!user || user._id !== randomOptions._id}
+            disabled={!user || user._id !== randomOptions.ownerID}
             type="number"
             onChange={(e) =>
               dispatch(
@@ -209,7 +209,7 @@ function RandomOptions() {
           <input
             className="form-control my-2"
             value={randomOptions.end}
-            disabled={!user || user._id !== randomOptions._id}
+            disabled={!user || user._id !== randomOptions.ownerID}
             type="number"
             onChange={(e) =>
               dispatch(
@@ -220,11 +220,11 @@ function RandomOptions() {
               )
             }
           />
-          <h5>Step: </h5>
+          {/* <h5>Step: </h5>
           <input
             className="form-control my-2"
             value={randomOptions.step}
-            disabled={!user || user._id !== randomOptions._id}
+            disabled={!user || user._id !== randomOptions.ownerID}
             type="number"
             onChange={(e) =>
               dispatch(
@@ -234,7 +234,7 @@ function RandomOptions() {
                 })
               )
             }
-          />
+          /> */}
         </div>
       )}
       {user && user._id === randomOptions.ownerID && (
