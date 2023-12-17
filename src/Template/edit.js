@@ -165,9 +165,9 @@ function EditTemplate() {
                   dispatch(setTemplate({ ...template, traits: alteredTraits }));
                 }}
               >
-                {allRandomOptions.map((randomOptions) => {
+                {allRandomOptions.map((randomOptions, index) => {
                   return (
-                    <option value={randomOptions._id}>
+                    <option value={randomOptions._id} key={index}>
                       {randomOptions.title
                         ? randomOptions.title
                         : "Unnamed Random Options"}

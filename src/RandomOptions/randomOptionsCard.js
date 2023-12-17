@@ -11,7 +11,6 @@ function RandomOptionsCard({ content }) {
   const [ownerUsername, setOwnerUsername] = useState("");
   const OPTIONS_LIST_MAX_DISPLAYED = 10;
   const user = useSelector((state) => state.userReducer.user);
-  const weAreOwner = ownerID === (user && user.id);
   let isList,
     isRange = false;
   let optionsList;
@@ -107,7 +106,7 @@ function RandomOptionsCard({ content }) {
         <Link className="remove-link-decoration" to={`/RandomOptions/${_id}`}>
           <div
             className={`text-truncate ${
-              !weAreOwner ? "limit-card-header" : ""
+              !(user && user._id === ownerID) ? "limit-card-header" : ""
             }`}
           >
             <h3 className="mb-0">
@@ -115,7 +114,7 @@ function RandomOptionsCard({ content }) {
             </h3>
           </div>
         </Link>
-        {!weAreOwner ? (
+        {!(user && user._id === ownerID) ? (
           <Link className="remove-link-decoration" to={`/Profile/${ownerID}`}>
             <div className="text-truncate underline-on-hover">
               By {ownerUsername}
@@ -134,7 +133,7 @@ function RandomOptionsCard({ content }) {
         <div className="my-2">{randomOptionsBody}</div>
       </Link>
       <div className="mt-2">
-        {weAreOwner ? (
+        {user && user._id === ownerID ? (
           <div className="hstack gap-2">
             <button
               className="btn btn-danger btn-small"
