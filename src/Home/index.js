@@ -82,6 +82,7 @@ function Home() {
       dispatch(setTemplates(yTemplates));
       dispatch(setCharacters(yCharacters));
       dispatch(setRandomOptions(yRandomOptions));
+      console.log(yCharacters);
     }
   };
 
