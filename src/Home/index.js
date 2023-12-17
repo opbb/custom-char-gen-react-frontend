@@ -208,7 +208,7 @@ function Home() {
             </h2>
             <div id="yourStuff" className="accordion-collapse collapse show">
               <div className="accordion-body row px-0">
-                <div className="col-12 col-md-6">
+                <div className="col-12 col-lg-6">
                   <ListAccordionItem
                     id="yourTemplates"
                     title="Templates"
@@ -224,7 +224,7 @@ function Home() {
                     ListContentsComponentType={RandomOptionsCard}
                   />
                 </div>
-                <div className="col-12 col-md-6">
+                <div className="col-12 col-lg-6">
                   <ListAccordionItem
                     id="yourCharacters"
                     title="Characters"
@@ -261,7 +261,7 @@ function Home() {
           </h2>
           <div id="featuredStuff" className="accordion-collapse collapse show">
             <div className="accordion-body row px-0">
-              <div className="col-12 col-md-6">
+              <div className="col-12 col-lg-6">
                 <ListAccordionItem
                   id="featuredTemplates"
                   title="Templates"
@@ -275,7 +275,7 @@ function Home() {
                   ListContentsComponentType={RandomOptionsCard}
                 />
               </div>
-              <div className="col-12 col-md-6">
+              <div className="col-12 col-lg-6">
                 <ListAccordionItem
                   id="featuredCharacters"
                   title="Characters"
